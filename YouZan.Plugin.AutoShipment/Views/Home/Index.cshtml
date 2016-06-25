@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "首页";
+}
+
+<br />
+<br />
+<br />
+<div class="form-group">
+    <label for="name">有赞AppID:</label>
+    <input id="txtAppID" type="text" value="e597bbd88da8bf4657" />
+</div>
+<div class="form-group">
+    <label for="name">有赞AppSecert:</label>
+    <input id="txtAppSecert" type="text" value="5919dde53c102ee660e071d15e7081b5" />
+</div>
+<div class="form-group">
+    <label for="name">订单ID:</label>
+    <input id="tid" type="text" />
+</div>
+<div class="form-group">
+    <button id="getPaiedOrders" onclick="getPaiedOrders();">获取所有的订单</button>
+    <button id="getInfo" onclick="getOrderInfo();">获取订单信息</button>
+    <button id="useInfo" onclick="useOrderInfo();">根据订单号给用户核销已经发货的虚拟商品订单（核销后可尽快回款）</button>
+    <button >根据订单号给用户获取优惠码</button>
+    <button>核销用户获取的优惠码</button>
+    <button>公众号粉丝推送消息</button>
+
+</div>
+<div class="form-group">
+    <label for="name">微信粉丝ID:</label>
+    <input id="wechatId" type="text" />
+    <label for="name">优惠券码组ID:</label>
+    <input id="couponGroupId" type="text" />
+</div>
+
+<div class="form-group">
+    <button onclick="getCouponWithWechatId()">根据粉丝ID，给粉丝授权优惠码(需要服务号权限)</button>
+</div>
+<div class="form-group">
+    <button onclick="getUnfinishedCoupons()">获取所有未结束的优惠列表（包含未开始的、进行中的）</button>
+</div>
+
+<script type="text/javascript">
+    //获取所有支付的订单
+    function getPaiedOrders() {
+        var appID = $("#txtAppID").val();
+        var appSecert = $("#txtAppSecert").val();
+        
+        var inputData = { "appID": appID, "appSecert": appSecert, "rand": Math.random() };
+        $.getJSON("/Home/GetPayedOrders", inputData, function (data) {
+            $("#orderList").html(data);
+        });
+    }
+    //获取单个订单详细信息
+    function getOrderInfo() {
+        var appID = $("#txtAppID").val();
+        var appSecert = $("#txtAppSecert").val();
+        var orderId = $("#tid").val();
+        var inputData = { "orderId": orderId, "appID": appID, "appSecert": appSecert, "rand": Math.random() };
+        $.getJSON("/Home/GetOrderInfo", inputData, function (data) {
+            $("#orderList").html(data);
+        });
+    }
+    //核销包含虚拟商品的订单
+    function useOrderInfo() {
+        var appID = $("#txtAppID").val();
+        var appSecert = $("#txtAppSecert").val();
+        var orderId = $("#tid").val();
+        var inputData = { "orderId": orderId, "appID": appID, "appSecert": appSecert,"rand":Math.random() };
+        $.getJSON("/Home/UseOrderInfo", inputData, function (data) {
+            $("#orderList").html(data);
+        });
+    }
+    //根据粉丝ID，给粉丝授权优惠码
+    function getCouponWithWechatId()
+    {
+        var appID = $("#txtAppID").val();
+        var appSecert = $("#txtAppSecert").val();
+        var wechatId = $("#wechatId").val();
+        var couponGroupId = $("#couponGroupId").val();
+        var inputData = { "couponGroupId": couponGroupId, "wechatId": wechatId, "appID": appID, "appSecert": appSecert, "rand": Math.random() };
+        $.getJSON("/Home/GetCouponWithWechatId", inputData, function (data) {
+            $("#orderList").html(data);
+        });
+    }
+    //获取所有未结束的优惠列表（包含未开始的、进行中的）
+    function getUnfinishedCoupons()
+    {
+        var appID = $("#txtAppID").val();
+        var appSecert = $("#txtAppSecert").val();
+       
+       
+        var inputData = {   "appID": appID, "appSecert": appSecert, "rand": Math.random() };
+        $.getJSON("/Home/GetUnfinishedCoupons", inputData, function (data) {
+            $("#orderList").html(data);
+        });
+    }
+
+  
+</script>
+
+<div class="container">
+    <div id="orderList"></div>
+</div>
